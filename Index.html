@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게임 클라이언트 개발자 | 조준수 포트폴리오 이력서</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Noto Sans KR & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Noto Sans KR', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0f172a; /* Slate 900 */
+            color: #f1f5f9; /* Slate 100 */
+        }
+        /* 스킬바 애니메이션 효과 */
+        .skill-progress {
+            width: 0;
+            transition: width 1.5s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-brand-500 selection:text-white pb-20">
+
+    <!-- 이메일 복사 완료 토스트 알림 -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 bg-brand-600 text-white px-5 py-3 rounded-xl shadow-2xl flex items-center space-x-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <i class="fa-solid fa-circle-check"></i>
+        <span class="text-sm font-medium">이메일 주소가 복사되었습니다!</span>
+    </div>
+
+    <!-- 네비게이션 바 -->
+    <nav class="sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center space-x-2">
+                    <span class="text-brand-500 font-extrabold text-xl tracking-tight">JUNSOO.DEV</span>
+                </div>
+                <div class="hidden md:flex space-x-6 text-sm font-medium text-slate-300">
+                    <a href="#about" class="hover:text-brand-500 transition-colors">소개</a>
+                    <a href="#skills" class="hover:text-brand-500 transition-colors">핵심 기술</a>
+                    <a href="#projects" class="hover:text-brand-500 transition-colors">프로젝트</a>
+                    <a href="#troubleshooting" class="hover:text-brand-500 transition-colors">문제해결</a>
+                    <a href="#collaboration" class="hover:text-brand-500 transition-colors">협업</a>
+                    <a href="#education" class="hover:text-brand-500 transition-colors">이력/활동</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-slate-400 hover:text-white focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 모바일 드롭다운 메뉴 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 pt-2 pb-4 space-y-2 text-center">
+            <a href="#about" class="block py-2 text-slate-300 hover:text-brand-500 transition-colors">소개</a>
+            <a href="#skills" class="block py-2 text-slate-300 hover:text-brand-500 transition-colors">핵심 기술</a>
+            <a href="#projects" class="block py-2 text-slate-300 hover:text-brand-500 transition-colors">프로젝트</a>
+            <a href="#troubleshooting" class="block py-2 text-slate-300 hover:text-brand-500 transition-colors">문제해결</a>
+            <a href="#collaboration" class="block py-2 text-slate-300 hover:text-brand-500 transition-colors">협업</a>
+            <a href="#education" class="block py-2 text-slate-300 hover:text-brand-500 transition-colors">이력/활동</a>
+        </div>
+    </nav>
+
+    <!-- 메인 컨테이너 -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 space-y-24">
+
+        <!-- 1. 기본 정보 (Hero Section) -->
+        <section id="about" class="scroll-mt-20 bg-gradient-to-br from-slate-900 via-slate-800/50 to-slate-900 p-8 sm:p-10 rounded-3xl border border-slate-800 shadow-2xl relative overflow-hidden">
+            <!-- 배경 장식 데코 -->
+            <div class="absolute -top-10 -right-10 w-40 h-40 bg-brand-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-10 -left-10 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl"></div>
+
+            <div class="flex flex-col md:flex-row items-center gap-8 sm:gap-10">
+                <!-- 프로필 이미지 공란 플레이스홀더 -->
+                <div class="flex-shrink-0">
+                    <div class="relative w-44 h-56 sm:w-48 sm:h-64 rounded-2xl border-2 border-dashed border-slate-700 bg-slate-900/60 hover:bg-slate-900 hover:border-brand-500 transition-all duration-300 flex flex-col items-center justify-center p-4 text-center group cursor-pointer shadow-lg">
+                        <!-- 프로필 사진 삽입을 원하는 경우 아래 <img> 태그 주석을 해제하고 src에 파일 경로를 넣어주세요 -->
+                        <!-- <img src="profile.jpg" alt="조준수 프로필" class="absolute inset-0 w-full h-full object-cover rounded-2xl"> -->
+                        <i class="fa-solid fa-user-tie text-5xl text-slate-600 group-hover:text-brand-500 group-hover:scale-110 transition-all duration-300 mb-3"></i>
+                        <span class="text-xs font-semibold text-slate-400 group-hover:text-brand-400">사진 추가 영역</span>
+                        <span class="text-[10px] text-slate-500 mt-1">권장 비율 3:4</span>
+                        <div class="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-brand-500 text-[10px] px-1.5 py-0.5 rounded text-white font-medium">편집</div>
+                    </div>
+                </div>
+
+                <!-- 텍스트 디테일 -->
+                <div class="flex-1 text-center md:text-left space-y-4">
+                    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-400 text-xs font-semibold tracking-wider uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
+                        <span>Game Client Developer</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-100 tracking-tight">조준수</h1>
+                    <p class="text-base sm:text-lg text-slate-300 leading-relaxed max-w-2xl font-normal">
+                        "회사의 요구사항을 명확하게 인지하고, 기술적 한계를 논리적으로 돌파하며 생산성 있게 개발해내는 클라이언트 개발자입니다!"
+                    </p>
+                    
+                    <!-- 연락처 정보 격자 구조 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 text-sm text-slate-400">
+                        <div class="flex items-center justify-center md:justify-start space-x-2.5">
+                            <i class="fa-solid fa-envelope text-slate-500 w-4"></i>
+                            <span class="hover:text-slate-200 cursor-pointer" onclick="copyEmail('wnstn2228@gmail.com')">wnstn2228@gmail.com</span>
+                            <button onclick="copyEmail('wnstn2228@gmail.com')" class="text-slate-600 hover:text-brand-500" title="이메일 주소 복사">
+                                <i class="fa-regular fa-copy text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="flex items-center justify-center md:justify-start space-x-2.5">
+                            <i class="fa-solid fa-phone text-slate-500 w-4"></i>
+                            <a href="tel:010-2336-2871" class="hover:text-slate-200">010-2336-2871</a>
+                        </div>
+                        <div class="flex items-center justify-center md:justify-start space-x-2.5">
+                            <i class="fa-brands fa-github text-slate-500 w-4"></i>
+                            <a href="https://github.com/wnstn2228" target="_blank" class="hover:text-brand-400 underline decoration-slate-700 hover:decoration-brand-500">github.com/wnstn2228</a>
+                        </div>
+                        <div class="flex items-center justify-center md:justify-start space-x-2.5">
+                            <i class="fa-solid fa-location-dot text-slate-500 w-4"></i>
+                            <span>경기도 부천시</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 자기소개 추가 서술 -->
+        <section class="bg-slate-900/40 p-8 rounded-3xl border border-slate-800/80">
+            <h2 class="text-xl font-bold text-slate-200 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-paper-plane text-brand-500 text-sm"></i>
+                <span>자기소개</span>
+            </h2>
+            <div class="text-slate-300 text-sm leading-relaxed space-y-4">
+                <p>
+                    저는 게임 클라이언트 개발 분야에서 <strong class="text-brand-400">‘기술적 제한을 창의적으로 극복하는 해결 능력’</strong>과 <strong class="text-emerald-400">‘기획의 본질을 꿰뚫어 보는 소통력’</strong>을 바탕으로 게임 플레이의 가치를 극대화하는 개발자입니다.
+                </p>
+                <p>
+                    대학 학부 및 프로젝트를 수행하며 클라이언트 메인 프로그래머이자 PM으로서 프로젝트를 리드했습니다. 웹 기반 샌드박스 엔진의 수학 라이브러리 한계를 극복하기 위해 삼각함수와 벡터 연산을 직접 구현하여 자연스러운 수중 관성 시스템을 완성해 낸 경험이 있습니다. 이 과정을 통해 엔진이 제공하는 기능에 의존하는 것을 넘어, 필요한 수학적·물리적 논리를 스스로 정의하고 구현하는 깊이 있는 개발 태도를 갖추게 되었습니다.
+                </p>
+                <p>
+                    앞으로 신속한 프로토타이핑과 견고한 아키텍처 설계를 지향하는 개발팀에서, 유저에게는 버그 없는 부드러운 플레이 경험을 선사하고 기획자·디자이너에게는 유연하고 확장 가능한 개발 도구를 지원하는 핵심 클라이언트 개발자로 기여하고 싶습니다.
+                </p>
+            </div>
+        </section>
+
+        <!-- 2. 핵심 기술 그래프 (Skills Section) -->
+        <section id="skills" class="scroll-mt-20">
+            <div class="text-center md:text-left mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-100 flex items-center justify-center md:justify-start gap-3">
+                    <i class="fa-solid fa-code text-brand-500"></i>
+                    <span>핵심 개발 역량</span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-2">지속적인 프로젝트 경험을 통해 검증해낸 기술 수치 및 근거 목록입니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- 유니티 -->
+                <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-brands fa-unity text-2xl text-emerald-400"></i>
+                                <span class="font-bold text-slate-200">유니티 (Unity)</span>
+                            </div>
+                            <span class="text-sm font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-0.5 rounded-full">85%</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            UGUI, 물리, 애니메이션, 코루틴 등 엔진 핵심 API 능숙. 디자인 패턴(싱글톤, 상태 패턴, 옵저버)을 활용한 확장성 있는 아키텍처 설계 가능.
+                        </p>
+                    </div>
+                    <!-- 프로그레스 바 -->
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div class="skill-progress bg-emerald-500 h-2.5 rounded-full" data-target="85%"></div>
+                    </div>
+                </div>
+
+                <!-- C# -->
+                <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-xl font-bold text-brand-400 font-mono">C#</span>
+                                <span class="font-bold text-slate-200">C# 프로그래밍</span>
+                            </div>
+                            <span class="text-sm font-bold text-brand-400 bg-brand-500/10 px-2.5 py-0.5 rounded-full">80%</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            델리게이트/이벤트 기반 디커플링 설계, 가비지 컬렉션(GC) 최소화를 위한 메모리 최적화, LINQ 및 인터페이스 활용 가능.
+                        </p>
+                    </div>
+                    <!-- 프로그레스 바 -->
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div class="skill-progress bg-brand-500 h-2.5 rounded-full" data-target="80%"></div>
+                    </div>
+                </div>
+
+                <!-- AI 활용 능력 -->
+                <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2.5">
+                                <i class="fa-solid fa-robot text-xl text-indigo-400"></i>
+                                <span class="font-bold text-slate-200">AI 협업 & 자동화</span>
+                            </div>
+                            <span class="text-sm font-bold text-indigo-400 bg-indigo-500/10 px-2.5 py-0.5 rounded-full">80%</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            GitHub Copilot 및 ChatGPT를 빌드 자동화, 템플릿 코드 작성, 난해한 버그 디버깅 및 알고리즘 최적화에 적극 활용하여 개발 생산성 2배 이상 향상.
+                        </p>
+                    </div>
+                    <!-- 프로그레스 바 -->
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div class="skill-progress bg-indigo-400 h-2.5 rounded-full" data-target="80%"></div>
+                    </div>
+                </div>
+
+                <!-- C언어 -->
+                <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2.5">
+                                <span class="text-xl font-bold text-blue-400 font-mono">C</span>
+                                <span class="font-bold text-slate-200">저수준 언어 이해 (C언어)</span>
+                            </div>
+                            <span class="text-sm font-bold text-blue-400 bg-blue-500/10 px-2.5 py-0.5 rounded-full">60%</span>
+                        </div>
+                        <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                            포인터와 메모리 구조(스택/힙)에 대한 확실한 이해로 데이터 최적화와 필요 시 효율적인 커스텀 자료구조 구현이 가능.
+                        </p>
+                    </div>
+                    <!-- 프로그레스 바 -->
+                    <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div class="skill-progress bg-blue-500 h-2.5 rounded-full" data-target="60%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 프로젝트 섹션 (Projects Section with Tabs & Detailed Modals) -->
+        <section id="projects" class="scroll-mt-20">
+            <div class="text-center md:text-left mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-100 flex items-center justify-center md:justify-start gap-3">
+                    <i class="fa-solid fa-gamepad text-brand-500"></i>
+                    <span>개발 프로젝트</span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-2">대표 프로젝트 목록입니다. 카드를 클릭하면 상세 기여도와 구현 상세를 확인할 수 있습니다.</p>
+            </div>
+
+            <!-- 필터링 탭 메뉴 -->
+            <div class="flex justify-center md:justify-start space-x-2 mb-6 text-xs sm:text-sm overflow-x-auto pb-2">
+                <button onclick="filterProjects('all')" class="project-tab-btn active bg-brand-600 text-white px-4 py-2 rounded-lg font-medium shadow-md transition-all">전체보기</button>
+                <button onclick="filterProjects('unity')" class="project-tab-btn bg-slate-850 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-lg font-medium transition-all">Unity/C#</button>
+                <button onclick="filterProjects('web')" class="project-tab-btn bg-slate-850 hover:bg-slate-800 text-slate-300 px-4 py-2 rounded-lg font-medium transition-all">Web/Redbrick</button>
+            </div>
+
+            <!-- 프로젝트 카드 그리드 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
+                <!-- 아기 해달 뀨아 -->
+                <div class="project-card bg-slate-900 border border-slate-800 hover:border-brand-500/50 rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" data-category="web" onclick="openProjectModal('뀨아')">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 px-2 py-0.5 rounded-md font-semibold">Web, JS, Redbrick</span>
+                            <span class="text-xs text-slate-500">2025.03 - 2025.06</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100">아기 해달 뀨아</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            레드브릭 플랫폼을 활용하여 고전 명작 아기고래 쿠아의 감성을 2D 횡스크롤 형태로 모작 및 고도화한 프로젝트입니다.
+                        </p>
+                    </div>
+                    <div class="border-t border-slate-800 mt-6 pt-4 flex justify-between items-center text-xs text-slate-400">
+                        <span>역할: <strong class="text-slate-300">PM & 메인 프로그래머</strong></span>
+                        <span class="text-brand-400 font-semibold group flex items-center gap-1">상세 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- P(awn)의 거짓 -->
+                <div class="project-card bg-slate-900 border border-slate-800 hover:border-brand-500/50 rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" data-category="unity" onclick="openProjectModal('pawns')">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-semibold">Unity, C#, 3D, FSM</span>
+                            <span class="text-xs text-slate-500">2025.09 - 2025.12</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100">P(awn)의 거짓</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            체스 말(Pawn)의 이동 규칙과 액션 장르를 융합한 3D 쿼터뷰 전투 로그라이크 게임입니다. 보스 AI 상태머신이 탑재되어 있습니다.
+                        </p>
+                    </div>
+                    <div class="border-t border-slate-800 mt-6 pt-4 flex justify-between items-center text-xs text-slate-400">
+                        <span>역할: <strong class="text-slate-300">리드 클라이언트 프로그래머</strong></span>
+                        <span class="text-brand-400 font-semibold group flex items-center gap-1">상세 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- 누리살이 -->
+                <div class="project-card bg-slate-900 border border-slate-800 hover:border-brand-500/50 rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" data-category="unity" onclick="openProjectModal('nuri')">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-semibold">Unity, C#, Tilemap, JSON</span>
+                            <span class="text-xs text-slate-500">2025.07 - 2025.08</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100">누리살이</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            한국 전통 가옥 양식을 디자인 기반으로 한 힐링 및 가구 배치 타운 타이쿤 시뮬레이션입니다. 동적 스케줄링이 구현되었습니다.
+                        </p>
+                    </div>
+                    <div class="border-t border-slate-800 mt-6 pt-4 flex justify-between items-center text-xs text-slate-400">
+                        <span>역할: <strong class="text-slate-300">UI/UX & 시뮬레이션 개발자</strong></span>
+                        <span class="text-brand-400 font-semibold group flex items-center gap-1">상세 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                    </div>
+                </div>
+
+                <!-- Project Pharmacy -->
+                <div class="project-card bg-slate-900 border border-slate-800 hover:border-brand-500/50 rounded-2xl p-6 flex flex-col justify-between hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer" data-category="unity" onclick="openProjectModal('pharmacy')">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md font-semibold">Unity, C#, SQLite, Bitmask</span>
+                            <span class="text-xs text-slate-500">2026.01 - 2026.04</span>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-100">Project Pharmacy</h3>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            판타지 세계관의 마법 약국 조합 타이쿤으로, 비트마스크를 활용해 수십가지 재료 조합법 판독 시간을 단축한 1인 개발작입니다.
+                        </p>
+                    </div>
+                    <div class="border-t border-slate-800 mt-6 pt-4 flex justify-between items-center text-xs text-slate-400">
+                        <span>역할: <strong class="text-slate-300">솔로 디벨로퍼 (개인 프로젝트)</strong></span>
+                        <span class="text-brand-400 font-semibold group flex items-center gap-1">상세 보기 <i class="fa-solid fa-arrow-right text-[10px]"></i></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. 문제 해결 경험 (Troubleshooting Section) -->
+        <section id="troubleshooting" class="scroll-mt-20">
+            <div class="text-center md:text-left mb-10">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-100 flex items-center justify-center md:justify-start gap-3">
+                    <i class="fa-solid fa-screwdriver-wrench text-brand-500"></i>
+                    <span>문제 해결 경험 (Troubleshooting)</span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-2">'아기 해달 뀨아' 개발 중 겪은 고난이도의 게임 물리 충돌 버그 해결 여정입니다.</p>
+            </div>
+
+            <!-- 타임라인형 문제해결 디자인 -->
+            <div class="space-y-6 relative before:absolute before:inset-0 before:left-4 sm:before:left-6 before:w-0.5 before:bg-slate-800">
+                
+                <!-- 1단계: 상황 -->
+                <div class="relative pl-10 sm:pl-16 group">
+                    <div class="absolute left-1.5 sm:left-3.5 top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-amber-500 group-hover:bg-amber-500 transition-colors flex items-center justify-center">
+                        <span class="text-[10px] font-extrabold text-amber-500 group-hover:text-slate-900">1</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80">
+                        <span class="text-[10px] text-amber-400 uppercase tracking-widest font-bold">Problem Context</span>
+                        <h4 class="text-lg font-bold text-slate-100 mt-1">물리 엔진과 벽 끼임의 치명적 오작동</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed mt-2">
+                            웹 엔진 상에서 물속 수泳 관성을 자연스럽게 만들기 위해 강제로 내장 물리 옵션을 켰으나, 해달 캐릭터가 벽면과 격렬히 충돌하며 튀어오르거나 좁은 공간 내부로 이탈하여 게임 불능 상태가 되는 치명적 장애가 빈번히 일어났습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 2단계: 분석 -->
+                <div class="relative pl-10 sm:pl-16 group">
+                    <div class="absolute left-1.5 sm:left-3.5 top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-indigo-500 group-hover:bg-indigo-500 transition-colors flex items-center justify-center">
+                        <span class="text-[10px] font-extrabold text-indigo-400 group-hover:text-slate-900">2</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80">
+                        <span class="text-[10px] text-indigo-400 uppercase tracking-widest font-bold">Analysis / Root Cause</span>
+                        <h4 class="text-lg font-bold text-slate-100 mt-1">물리 연산 루프와 보정 공백 분석</h4>
+                        <ul class="text-sm text-slate-400 leading-relaxed mt-2 space-y-1.5 list-disc pl-4">
+                            <li>엔진 내부의 컬라이더 연산주기가 프레임 업데이트 주기와 일치하지 않아 동기화 누수 발생.</li>
+                            <li>수중 마찰에 단순 감쇄 상수를 곱하는 방식을 쓰다 보니 방향 회전 시 둔탁한 감각 누적.</li>
+                            <li>가속도가 높아진 임계 프레임 상황에서 위치 값을 정밀 보정하는 알고리즘이 내장되지 않았음을 규명.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- 3단계: 해결책 -->
+                <div class="relative pl-10 sm:pl-16 group">
+                    <div class="absolute left-1.5 sm:left-3.5 top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-emerald-500 group-hover:bg-emerald-500 transition-colors flex items-center justify-center">
+                        <span class="text-[10px] font-extrabold text-emerald-400 group-hover:text-slate-900">3</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80">
+                        <span class="text-[10px] text-emerald-400 uppercase tracking-widest font-bold">Resolution Action</span>
+                        <h4 class="text-lg font-bold text-slate-100 mt-1">자체 기하 연산기 & Custom Sweep Collision 구축</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed mt-2">
+                            불안정한 무거운 엔진 물리를 과감하게 포기하고, 순수 프레임 독립 이동 공식($v_{new} = v_{old} \times friction + acceleration \times \Delta t$)을 짰습니다. 삼각함수로 캐릭터 전방 벡터 투영 계수를 회전/속도에 따라 분배하고, 벽면 충돌 발생 예상 프레임 직전 반사각을 계산해 부드럽게 표면을 미끄러지듯 이동시키는 <strong class="text-slate-200">커스텀 스윕 충돌체</strong>를 직접 하드코딩 설계했습니다.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 4단계: 깨달은 점 -->
+                <div class="relative pl-10 sm:pl-16 group">
+                    <div class="absolute left-1.5 sm:left-3.5 top-1.5 w-6 h-6 rounded-full bg-slate-900 border-2 border-brand-500 group-hover:bg-brand-500 transition-colors flex items-center justify-center">
+                        <span class="text-[10px] font-extrabold text-brand-500 group-hover:text-slate-900">4</span>
+                    </div>
+                    <div class="bg-slate-900/60 p-6 rounded-2xl border border-slate-800/80">
+                        <span class="text-[10px] text-brand-400 uppercase tracking-widest font-bold">Takeaway / Impact</span>
+                        <h4 class="text-lg font-bold text-slate-100 mt-1">기획 의도를 완성하는 프로그래머의 기하학적 사고력</h4>
+                        <p class="text-sm text-slate-400 leading-relaxed mt-2">
+                            상용 엔진이 미리 준비한 편리한 물리 컴포넌트 버튼만 조립하는 형태로는 기획 단계에서 꿈꿨던 정교하고 유려한 플레이 손맛을 낼 수 없음을 체감했습니다. 게임 코어 개발자는 엔진 뒤편의 기하학 및 선형대수 원리를 직접 제어할 실력을 확보해야 함을 깨달았습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 협업 및 커뮤니케이션 (Collaboration Section) -->
+        <section id="collaboration" class="scroll-mt-20">
+            <div class="text-center md:text-left mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-100 flex items-center justify-center md:justify-start gap-3">
+                    <i class="fa-solid fa-users text-brand-500"></i>
+                    <span>협업 및 커뮤니케이션</span>
+                </h2>
+                <p class="text-sm text-slate-400 mt-2">비프로그래머 동료들의 생산성을 함께 고려하며 최상의 빌드를 이끌어 냅니다.</p>
+            </div>
+
+            <!-- 협업 케이스 스터디 카드 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-bold text-slate-200">기획 튜닝용 에디터 지원</h4>
+                            <span class="text-[10px] text-slate-500">with 기획자</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        "조작감이 답답하다"는 식의 모호한 기획 요구사항을 피드백하기 위해 실시간 인게임 디버그 콘솔창 및 수치 조절용 UI 툴을 빌드하여 기획자에게 제공했습니다. 기획자 본인이 변수(최대속도, 가속도, 수중 저항력)를 마우스 드래그로 조절해 가며 실시간 검증을 시도할 수 있도록 지원하여 소통 2회 만에 완벽한 피드백 반영을 끝마쳤습니다.
+                    </p>
+                </div>
+
+                <div class="bg-slate-900/60 border border-slate-800 p-6 rounded-2xl">
+                    <div class="flex items-center space-x-3 mb-4">
+                        <div class="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400">
+                            <i class="fa-solid fa-cube"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-base font-bold text-slate-200">아트 에셋 축 변환 가이드라인</h4>
+                            <span class="text-[10px] text-slate-500">with 디자이너</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                        3D 그래픽 아티스트가 만든 파일이 엔진으로 들여올 때마다 머리 방향 축(Pivot)이 어긋나거나 고유 스케일이 비정상 왜곡되는 이슈가 생겼습니다. Blender와 Unity 엔진 간의 좌표계 차이를 설명하는 원포인트 변환 문서 규칙을 정비하여 디자이너 그룹에 제공, 에셋 변환 오류 건수를 기존 80% 이상 감축했습니다.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. 교육 및 활동 (Education / Experience) -->
+        <section id="education" class="scroll-mt-20">
+            <div class="text-center md:text-left mb-8">
+                <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-100 flex items-center justify-center md:justify-start gap-3">
+                    <i class="fa-solid fa-graduation-cap text-brand-500"></i>
+                    <span>학력 및 대외 활동</span>
+                </h2>
+            </div>
+
+            <div class="bg-slate-900/60 border border-slate-800 rounded-2xl divide-y divide-slate-800">
+                <div class="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <div>
+                        <h4 class="text-base sm:text-lg font-bold text-slate-100">유한대학교 컴퓨터소프트웨어학과 게임콘텐츠전공 졸업</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">게임 클라이언트 및 콘텐츠 시스템 설계 전문 과정 수료</p>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500">2021.03 - 2026.02</span>
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <div>
+                        <h4 class="text-base sm:text-lg font-bold text-slate-100">2026년 게임콘텐츠전공 집행부 전공 대표</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">전공 학술행사 기획, 개발 프로젝트 성과 전시회 총괄 및 조율</p>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500">2026.03 - 2026.12</span>
+                </div>
+                <div class="p-6 sm:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                    <div>
+                        <h4 class="text-base sm:text-lg font-bold text-slate-100">누리살이 GameAify 공모전 AI 기술상 입상</h4>
+                        <p class="text-xs sm:text-sm text-slate-400 mt-1">AI를 활용한 콘텐츠 기획 및 기술 융합 부문 장려상/기술상 수상</p>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-500">2025.08</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 7. Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 mt-32 py-10 text-center text-xs text-slate-500">
+        <div class="max-w-5xl mx-auto px-4 space-y-4">
+            <p class="text-sm font-medium text-slate-400">"유연한 태도로, 견고한 결과물을 만들어 냅니다."</p>
+            <div class="flex justify-center space-x-4">
+                <a href="https://github.com/wnstn2228" target="_blank" class="hover:text-brand-500"><i class="fa-brands fa-github text-lg"></i></a>
+                <a href="mailto:wnstn2228@gmail.com" class="hover:text-brand-500"><i class="fa-solid fa-envelope text-lg"></i></a>
+            </div>
+            <p>&copy; 2026 CHO JUN SOO. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- 프로젝트 디테일 모달 창 -->
+    <div id="project-modal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl p-6 sm:p-8 relative space-y-6">
+            <button onclick="closeProjectModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <span id="modal-tags" class="text-[10px] bg-brand-500/10 text-brand-400 border border-brand-500/20 px-2 py-0.5 rounded font-semibold uppercase">Tags</span>
+                    <span id="modal-date" class="text-xs text-slate-500">Date</span>
+                </div>
+                <h3 id="modal-title" class="text-2xl font-bold text-slate-100">Project Title</h3>
+                <p id="modal-intro" class="text-sm text-slate-300 leading-relaxed italic bg-slate-950/40 p-4 rounded-xl border-l-4 border-brand-500">Intro text</p>
+            </div>
+
+            <!-- 상세 세부정보 테이블 -->
+            <div class="grid grid-cols-2 gap-4 text-xs bg-slate-950/20 p-4 rounded-2xl border border-slate-800/80">
+                <div>
+                    <span class="text-slate-500 block">역할</span>
+                    <span id="modal-role" class="text-slate-300 font-medium">Role</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">프로젝트 목표</span>
+                    <span id="modal-goal" class="text-slate-300 font-medium">Goal</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">구현 방식</span>
+                    <span id="modal-method" class="text-slate-300 font-medium">Method</span>
+                </div>
+                <div>
+                    <span class="text-slate-500 block">최종 성과</span>
+                    <span id="modal-result" class="text-slate-300 font-medium">Result</span>
+                </div>
+            </div>
+
+            <!-- 디테일 단락 -->
+            <div class="space-y-3 text-xs">
+                <h4 class="font-bold text-slate-200 text-sm flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-brand-500"></span>
+                    <span>상세 기여 요소</span>
+                </h4>
+                <ul id="modal-details" class="list-disc pl-4 text-slate-400 space-y-1 leading-relaxed">
+                    <!-- JS로 바인딩 -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트 로직 -->
+    <script>
+        // 프로젝트 세부 데이터 사전 정의
+        const projectData = {
+            '뀨아': {
+                title: '아기 해달 뀨아',
+                tags: 'Web, JavaScript, Redbrick Engine',
+                date: '2025.03 ~ 2025.06 (4개월)',
+                intro: '레드브릭(Redbrick) 엔진을 활용하여 고전 명작 아기고래 쿠아의 감성을 현대적으로 재해석한 횡스크롤 플랫포머 게임입니다.',
+                role: '기획 및 메인 프로그래머 (PM)',
+                goal: 'JS 기반 웹 플랫폼상에서 자료구조 기반 2D 관성 이동 기능 모작',
+                method: '마찰계수 및 오일러 적분 수식을 활용한 수중 관성 컨트롤러 직접 하드코딩',
+                result: '최종 12개 스테이지 빌드, 학부 캡스톤 최종 A+ 등급 달성',
+                details: [
+                    '엔진 고유 물리 처리 결함을 막기 위해 가속도 기반 수동 마찰력 모듈 독자 설계',
+                    '맵에 배치 즉시 유기적인 동작을 보장하는 기믹 트리거 컴포넌트화 설계',
+                    '실시간 인스턴스화 오버헤드를 막고 가비지를 줄이기 위한 커스텀 오브젝트 풀링 패턴 탑재'
+                ]
+            },
+            'pawns': {
+                title: 'P(awn)의 거짓',
+                tags: 'Unity, C#, Action Roguelike, FSM',
+                date: '2025.09 ~ 2025.12 (3개월)',
+                intro: '체스 보드 위의 졸(Pawn)의 이동 규칙을 액션 로그라이크와 3D 쿼터뷰로 재조명한 하이브리드 전투 아케이드입니다.',
+                role: '리드 클라이언트 개발자',
+                goal: '체스 기물의 독창적 규칙과 몬스터 지능 행동 트리 완성',
+                method: 'FSM(유한상태머신) 기반 보스 공격 패턴 루프 구조 설계',
+                result: '스팀 데모 완성 및 3종 보스 정밀 AI 설계 완성',
+                details: [
+                    '몬스터 행동 트리를 유한상태머신(FSM) 아키텍처로 조립하여 신속한 액션 분기 설계',
+                    '그리드 좌표 변수 기반의 충돌 충돌체 판정 및 타격 피드백 프레임 최적화',
+                    'Blender 에셋을 로드하는 과정의 본(Bone) 구조 최적화 및 축 어긋남 리소스 전반 트러블 슈팅'
+                ]
+            },
+            'nuri': {
+                title: '누리살이',
+                tags: 'Unity, C#, Layout Simulation, Tilemap',
+                date: '2025.07 ~ 2025.08 (2개월)',
+                intro: '한국 전통 한옥 양식을 바탕으로 유저가 기와, 정자 등의 소품을 커스텀 배치하여 집을 꾸미고 생활을 이끌어 나가는 힐링 타이쿤입니다.',
+                role: 'UI/UX 및 시뮬레이션 시스템 프로그래머',
+                goal: '사용하기 쉬운 그리드 기반 하우징 인프라 구축',
+                method: '유니티 타일맵 브러시 변환 연동 및 동적 NPC 활동 스케줄 데이터 파싱',
+                result: '다양한 테마의 전통 가구 드래그앤드롭 배치 시스템 완성',
+                details: [
+                    '유저가 화면 마우스 클릭 좌표를 그리드 좌표계로 변환하여 에셋을 충돌 없이 오버레이 배치하도록 타일맵 브러시 커스터마이징',
+                    '게임 내부 시간 변화(낮/밤)에 연동해 활성화되는 NPC들의 이동 노선 및 상호작용 행동 트리 저장 로직 작성',
+                    'JSON 파일 기반의 하우징 배치 이력 로컬 세이브/로드 모듈 탑재'
+                ]
+            },
+            'pharmacy': {
+                title: 'Project Pharmacy',
+                tags: 'Unity, C#, SQLite, DB, Bitmask',
+                date: '2026.01 ~ 2026.04 (3개월)',
+                intro: '비밀 마법 상점의 마스터가 되어 신비로운 약초들을 적절히 제련하고 섞어 정교한 포션을 완성하는 경영 연산 타이쿤입니다.',
+                role: '솔로 프로그래머 (개인 프로젝트)',
+                goal: '50여 개 이상의 조합 트리 검출 연산 고도 최적화',
+                method: '비트 연산(Bitmask)에 기초한 고성능 조합 공식 대칭 알고리즘 구현',
+                result: '조합법 데이터 조회의 시간 복잡도를 $O(1)$에 근접하게 달성',
+                details: [
+                    '재료의 유무 상태를 비트 비열로 표현해 조합 완료 상태 값을 정수 하나로 고속 비교 처리',
+                    'SQLite 내 로컬 데이터베이스를 인덱싱하여 다채로운 연금 레시피 데이터를 안정적으로 적재',
+                    '드래그 앤 드롭 방식을 채택한 모던 인벤토리 드래그 UI 시스템 독립 구현'
+                ]
+            }
+        };
+
+        // 모바일 메뉴 토글
+        const menuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 스크롤 시 스킬바 애니메이션 기동
+        const initSkillProgress = () => {
+            const skillBars = document.querySelectorAll('.skill-progress');
+            skillBars.forEach(bar => {
+                const target = bar.getAttribute('data-target');
+                bar.style.width = target;
+            });
+        };
+
+        // 윈도우 스크롤 감지 및 애니메이션 개시
+        let animated = false;
+        window.addEventListener('scroll', () => {
+            const skillsSection = document.getElementById('skills');
+            const rect = skillsSection.getBoundingClientRect();
+            if (rect.top < window.innerHeight - 100 && !animated) {
+                initSkillProgress();
+                animated = true;
+            }
+        });
+
+        // 첫 로드 때 화면 내 스킬 섹션 보이면 바로 가동
+        window.onload = () => {
+            const skillsSection = document.getElementById('skills');
+            const rect = skillsSection.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                initSkillProgress();
+                animated = true;
+            }
+        };
+
+        // 이메일 클립보드 복사 로직
+        function copyEmail(email) {
+            // 임시 textarea 생성
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = email;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            
+            try {
+                // Clipboard fallback API
+                document.execCommand('copy');
+                showToast();
+            } catch (err) {
+                console.error('복사 중 실패 발생: ', err);
+            }
+            
+            document.body.removeChild(tempTextArea);
+        }
+
+        // 토스트 알림 제어
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // 프로젝트 필터링 탭
+        function filterProjects(category) {
+            // 버튼 액티브 클래스 갱신
+            const buttons = document.querySelectorAll('.project-tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'active');
+                btn.classList.add('bg-slate-850', 'text-slate-300');
+            });
+
+            const activeBtn = event.currentTarget;
+            activeBtn.classList.remove('bg-slate-850', 'text-slate-300');
+            activeBtn.classList.add('bg-brand-600', 'text-white', 'active');
+
+            // 카드 리스트 노출 조정
+            const cards = document.querySelectorAll('.project-card');
+            cards.forEach(card => {
+                if (category === 'all') {
+                    card.style.display = 'flex';
+                } else {
+                    const cardCat = card.getAttribute('data-category');
+                    if (cardCat === category) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // 모달창 오픈 로직
+        function openProjectModal(projectId) {
+            const data = projectData[projectId];
+            if (!data) return;
+
+            document.getElementById('modal-title').innerText = data.title;
+            document.getElementById('modal-tags').innerText = data.tags;
+            document.getElementById('modal-date').innerText = data.date;
+            document.getElementById('modal-intro').innerText = `"${data.intro}"`;
+            document.getElementById('modal-role').innerText = data.role;
+            document.getElementById('modal-goal').innerText = data.goal;
+            document.getElementById('modal-method').innerText = data.method;
+            document.getElementById('modal-result').innerText = data.result;
+
+            const detailsUl = document.getElementById('modal-details');
+            detailsUl.innerHTML = '';
+            data.details.forEach(detail => {
+                const li = document.createElement('li');
+                li.innerText = detail;
+                detailsUl.appendChild(li);
+            });
+
+            const modal = document.getElementById('project-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden'; // 부모 스크롤 방지
+        }
+
+        // 모달창 닫기
+        function closeProjectModal() {
+            const modal = document.getElementById('project-modal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = 'auto'; // 스크롤 정상화
+        }
+
+        // 모달 영역 외각 클릭 시 자동 닫기
+        document.getElementById('project-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProjectModal();
+            }
+        });
+    </script>
+</body>
+</html>
